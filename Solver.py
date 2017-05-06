@@ -18,31 +18,22 @@ class Solver:
         scaled_x.append(self.function_box.n2_list(self.list_x))
         scaled_x.append(self.function_box.nlogn_list(self.list_x))
 
+        for i in range(0, len(self.list_x) - 1):
+            print (scaled_x[1][i], " ", self.list_y[i])
 
-        coefficients = numpy.polyfit(self.list_x, self.list_y, 1)
-        y = self.regresionYs(coefficients)
-
-        plt.plot(self.list_x, self.list_y, 'yo')
-
-        type = 'b'
         for x_list in scaled_x:
 
-            coefficients = numpy.polyfit(x_list, self.list_y, 1)
-            y = self.regresionYs(coefficients)
-            plt.plot(self.list_x, y, type)
-            if type == 'b':
-                type = 'g'
-            elif type == 'g':
-                type = 'r'
-            elif type == 'r':
-                type == 'y'
+            polynomial = numpy.polyfit(x_list, self.list_y, 1)
+            values = numpy.polyval(polynomial, x_list)
+
+            square_error = (numpy.sqrt(sum((values - self.list_y) ** 2) / len(self.list_x)))
+
+            print("BLAD to: ", square_error)
 
 
 
+        plt.yscale('log')
         plt.ylabel('some numbers')
         plt.show()
 
         pass
-
-    def regresionYs(self, coefficients):
-        return [coefficients[0] * x + coefficients[1] for x in self.list_x]

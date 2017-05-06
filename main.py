@@ -1,7 +1,6 @@
-import numpy
-import matplotlib.pyplot as plt
+import random
 
-from FunctionBox import FunctionBox
+import numpy
 import timeit
 
 from Solver import Solver
@@ -10,9 +9,7 @@ x_points = []
 y_points = []
 
 def power_list(n):
-    for i in numpy.arange(0,n):
-        for j in numpy.arange(0,n):
-            pass
+    pass
 
 def count_time(function, start_a, start_b, stop_a, stop_b, step):
     x = []
@@ -34,7 +31,7 @@ def points_generator(function):
 
     x = []
     y = []
-    res = count_time(function, 1, 1, 10, 4, 0.2)
+    res = count_time(function, 1, 1, 10, 3, 0.2)
     x.append(res[0])
     y.append(res[1])
     # res = count_time(function, 1, 4, 10, 7, 1)
