@@ -1,4 +1,5 @@
 import numpy
+import sys
 
 from FunctionBox import FunctionBox
 
@@ -11,27 +12,22 @@ class Solver:
         self.function_box = FunctionBox()
 
     def solve(self):
+        minimal_error = float('-inf')
 
-        scaled_x = []
 
-        scaled_x.append([self.function_box.n(x) for x in self.list_x])
-        scaled_x.append([self.function_box.n2(x) for x in self.list_x])
-        scaled_x.append([self.function_box.nlogn(x) for x in self.list_x])
+        functions = [self.function_box.n, self.function_box.nlogn, self.function_box.n2]
+        winner_function = functions[0]
+        for function in functions:
+            scaled_x_list = [function(x) for x in self.list_x]
 
-        for i in range(0, len(self.list_x) - 1):
-            print (scaled_x[1][i], " ", self.list_y[i])
+            coefficients = numpy.polyfit(scaled_x_list, self.list_y, 1) # a, b
+            y_values = numpy.polyval(coefficients, scaled_x_list) # y = a * x + b
 
-        for x_list in scaled_x:
+            square_error = (numpy.sqrt(sum((y_values - self.list_y) ** 2) / len(self.list_y)))
 
-            polynomial = numpy.polyfit(x_list, self.list_y, 1)
-            values = numpy.polyval(polynomial, x_list)
+            if (square_error < minimal_error ):
+                winner_function = function
+                minimal_error = square_error
 
-            square_error = (numpy.sqrt(sum((values - self.list_y) ** 2) / len(self.list_x)))
-
-            print("BLAD to: ", square_error)
-
-        plt.yscale('log')
-        plt.ylabel('some numbers')
-        plt.show()
-
+        print("Winner: ", winner_function.__name__)
         pass
