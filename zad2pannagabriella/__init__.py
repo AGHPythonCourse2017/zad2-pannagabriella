@@ -57,15 +57,13 @@ def count_time(init_function, main_function, clean_function, start_a, start_b, s
             end_time = time.time()
             y_points.append(end_time - start_time)
 
-            print(x, " ", end_time - start_time )
+            #print(x, " ", end_time - start_time )
 
             clean_function(data)
 
 def points_generator(init_function, main_function, clean_function):
     count_time(init_function, main_function, clean_function, 1, 2, 10, 3, 0.1)
     #count_time(init_function, main_function, clean_function, 1, 4, 10, 7, 1)
-
-    return (x_points, y_points)
 
 def start(init_function, main_function, clean_function):
 
@@ -74,6 +72,3 @@ def start(init_function, main_function, clean_function):
     function = solver.solve()
 
     print("Function is", function.__name__)
-
-def bum():
-    print("hello")
