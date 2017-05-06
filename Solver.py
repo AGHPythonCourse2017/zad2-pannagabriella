@@ -1,17 +1,48 @@
+import numpy
+
+from FunctionBox import FunctionBox
+
+import matplotlib.pyplot as plt
+
 class Solver:
-    def __init__(self, function_details):
-        self.function_details = function_details
+    def __init__(self, resources):
+        self.list_x = resources[0]
+        self.list_y = resources[1]
+        self.function_box = FunctionBox()
+
     def solve(self):
-        n2_counter = 0
-        n_counter = 0
-        s_counter = 0
 
-        main_counter = 0
-        for x in self.function_details["x"]:
-            n2_value = self.function_details["n2_function"](x)
-            n_value = self.function_details["n_function"](x)
-            s_value = self.function_details["s_function"](x)
+        scaled_x = []
 
-            d_n2 = abs(n2_value - self.function_details["n2_y"][main_counter])
-            d_n = abs(n_value - self.function_details["n_y"][main_counter])
-            d_s = abs(s_value - self.function_details["s_y"][main_counter])
+        scaled_x.append(self.function_box.n_list(self.list_x))
+        scaled_x.append(self.function_box.n2_list(self.list_x))
+        scaled_x.append(self.function_box.nlogn_list(self.list_x))
+
+
+        coefficients = numpy.polyfit(self.list_x, self.list_y, 1)
+        y = self.regresionYs(coefficients)
+
+        plt.plot(self.list_x, self.list_y, 'yo')
+
+        type = 'b'
+        for x_list in scaled_x:
+
+            coefficients = numpy.polyfit(x_list, self.list_y, 1)
+            y = self.regresionYs(coefficients)
+            plt.plot(self.list_x, y, type)
+            if type == 'b':
+                type = 'g'
+            elif type == 'g':
+                type = 'r'
+            elif type == 'r':
+                type == 'y'
+
+
+
+        plt.ylabel('some numbers')
+        plt.show()
+
+        pass
+
+    def regresionYs(self, coefficients):
+        return [coefficients[0] * x + coefficients[1] for x in self.list_x]
