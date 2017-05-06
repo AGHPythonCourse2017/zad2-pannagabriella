@@ -3,12 +3,12 @@ class FunctionBox:
     def __init__(self):
         pass
 
-    def n2_list(self, x_list):
-        return [x ** 2 for x in x_list]
+    def n2(self, x):
+        return x ** 2
 
-    def n_list(self, x_list):
-        return [x for x in x_list]
+    def n(self, x):
+        return x
 
-    def nlogn_list(self, x_list):
-        return [x * numpy.log2(x) for x in x_list]
+    def nlogn(self, x):
+        return x * numpy.log2(x)
 

@@ -14,9 +14,9 @@ class Solver:
 
         scaled_x = []
 
-        scaled_x.append(self.function_box.n_list(self.list_x))
-        scaled_x.append(self.function_box.n2_list(self.list_x))
-        scaled_x.append(self.function_box.nlogn_list(self.list_x))
+        scaled_x.append([self.function_box.n(x) for x in self.list_x])
+        scaled_x.append([self.function_box.n2(x) for x in self.list_x])
+        scaled_x.append([self.function_box.nlogn(x) for x in self.list_x])
 
         for i in range(0, len(self.list_x) - 1):
             print (scaled_x[1][i], " ", self.list_y[i])
@@ -29,8 +29,6 @@ class Solver:
             square_error = (numpy.sqrt(sum((values - self.list_y) ** 2) / len(self.list_x)))
 
             print("BLAD to: ", square_error)
-
-
 
         plt.yscale('log')
         plt.ylabel('some numbers')
