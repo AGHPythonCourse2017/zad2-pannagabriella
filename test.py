@@ -1,5 +1,4 @@
-import gaba_app
-
+import zad2pannagabriella as gaba
 def init(x):
     return x
 
@@ -11,4 +10,4 @@ def function(n):
 def clean(x):
     pass
 
-gaba_app.start(init, function, clean)
+gaba.start(init, function, clean)

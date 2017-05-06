@@ -47,7 +47,7 @@ class Solver:
 def count_time(init_function, main_function, clean_function, start_a, start_b, stop_a, stop_b, step):
     for b in range(start_b, stop_b):
         for a in numpy.arange(start_a, stop_a, step):
-            x = a * (10 ** b)
+            x = int(a * (10 ** b))
             x_points.append(x)
 
             data = init_function(x)
@@ -62,7 +62,7 @@ def count_time(init_function, main_function, clean_function, start_a, start_b, s
             clean_function(data)
 
 def points_generator(init_function, main_function, clean_function):
-    count_time(init_function, main_function, clean_function, 1, 1, 10, 3, 0.2)
+    count_time(init_function, main_function, clean_function, 1, 2, 10, 3, 0.1)
     #count_time(init_function, main_function, clean_function, 1, 4, 10, 7, 1)
 
     return (x_points, y_points)
