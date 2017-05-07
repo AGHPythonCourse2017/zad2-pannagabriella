@@ -142,7 +142,6 @@ class Generator:
             points.append(queue.get())
 
     def __validate_lists_size(self, x_points, y_points):
-
         if len(x_points) != len(y_points):
             raise DifferentListSizeException
 
