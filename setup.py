@@ -8,4 +8,4 @@ setup(name='zad2pannagabriella',
       author_email='pannagabriella',
       license='MIT',
       packages=['zad2pannagabriella'],
-      zip_safe=False)
+      zip_safe=False, install_requires=['numpy'])
