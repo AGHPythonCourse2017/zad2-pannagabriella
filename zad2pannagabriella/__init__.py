@@ -69,7 +69,7 @@ class Solver:
                     self.__size_function = self.__function_box.linear_function(
                         1 / coefficients[0], -coefficients[1] / coefficients[0])
                 else:
-                    logging.warning("Probably function is constant!")
+                    logging.warning("PFunction may be is constant!")
 
         logging.info("Function computed!")
     def get_expected_complexity_function_name(self):
