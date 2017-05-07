@@ -13,5 +13,5 @@ def clean(x):
 if __name__ == '__main__':
     generator = gaba.Generator(init, function, clean)
 
-    generator.start(1)
+    generator.start(10)
     print(generator.get_function_info())

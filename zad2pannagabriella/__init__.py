@@ -1,6 +1,7 @@
 import multiprocessing
 import numpy
 import time
+import logging
 
 
 class TimeoutListException(Exception):
@@ -44,6 +45,7 @@ class Solver:
         self.__size_function = None
 
     def solve(self):
+        logging.info("Solving function...")
         minimal_error = float('inf')
 
         candidate_functions = [self.__function_box.n, self.__function_box.nlogn, self.__function_box.n2]
@@ -66,7 +68,10 @@ class Solver:
                 if coefficients[0] != 0:
                     self.__size_function = self.__function_box.linear_function(
                         1 / coefficients[0], -coefficients[1] / coefficients[0])
+                else:
+                    logging.warning("Probably function is constant!")
 
+        logging.info("Function computed!")
     def get_expected_complexity_function_name(self):
         return self.__winner_function.__name__
 
@@ -104,17 +109,19 @@ class Generator:
         try:
             self.__validate_count_time_exit_status()
         except TimeoutListException:
-            print("List was cut")
+            logging.warning("Timeout: program to slow to fully calculate. Computing on less check points")
 
         try:
             self.__validate_lists_size(x_points, y_points)
             self.__solver = Solver(x_points, y_points)
         except DifferentListSizeException:
             self.__solver = Solver(x_points[:len(y_points)], y_points)
+            logging.warning("Timeout: program interrupted while calculating points. Computing on less check points")
 
         self.__solver.solve()
 
     def count_times(self, start_a, start_b, stop_a, stop_b, step):
+        logging.info("Generating times...")
         for b in range(start_b, stop_b):
             for a in numpy.arange(start_a, stop_a, step):
                 x = int(a * (10 ** b))
@@ -125,14 +132,17 @@ class Generator:
                 self.__main_function(data)
                 end_time = time.time()
 
-                print(x, " ", end_time - start_time)
+                y = end_time - start_time
+                logging.info("For size ", x, ", time ", y)
+                print(x, " ", y)
 
                 self.__queueX.put(x)
-                self.__queueY.put(end_time - start_time)
+                self.__queueY.put(y)
 
                 self.__clean_function(data)
 
         self.__times_counter_exit_status.value = 1
+        logging.info("All of possible data size has been checked")
 
     def __queue_to_list(self, queue):
         points = []
