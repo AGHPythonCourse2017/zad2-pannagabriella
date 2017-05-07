@@ -48,20 +48,31 @@ class Solver:
         self.__size_function = None
 
     def solve(self):
+        def generate_linear(test_function):
+            def aproximated_function(x):
+                x_list = [test_function(x) for x in self.__list_x]
+                coefficients = numpy.polyfit(x_list, self.__list_y, 1)  # a, b
+                return coefficients[0] * x + coefficients[1]
+
+            return aproximated_function
+
         logging.info("Solving function...")
+
         minimal_error = float('inf')
 
         self.generate_time_and_size_functions()
 
         candidate_functions = [FunctionBox.n, FunctionBox.nlogn, FunctionBox.n2]
-
         for candidate_function in candidate_functions:
+
+            @generate_linear
+            def new_function(x):
+                return candidate_function(x)
+
             scaled_x_list = [candidate_function(x) for x in self.__list_x]
+            y_values = [new_function(x) for x in scaled_x_list]  # y = a * x + b
 
-            coefficients = numpy.polyfit(scaled_x_list, self.__list_y, 1)  # a, b
-            y_values = numpy.polyval(coefficients, scaled_x_list)  # y = a * x + b
-
-            square_error = (numpy.sqrt(sum((y_values - self.__list_y) ** 2) / len(self.__list_y)))
+            square_error = self.count_square_error(y_values)
 
             if square_error < minimal_error:
                 minimal_error = square_error
@@ -79,6 +90,14 @@ class Solver:
                 1 / coefficients[0], -coefficients[1] / coefficients[0])
         else:
             logging.warning("Function may be is constant!")
+
+    def count_square_error(self, y_values):
+        y_sum = 0
+
+        for i in range(0, len(y_values)):
+            y_sum += ((y_values[i] - self.__list_y[i]) ** 2)
+
+        return numpy.sqrt(y_sum) / len(self.__list_y)
 
     def get_expected_complexity_function_name(self):
         return self.__winner_function.__name__
@@ -124,7 +143,10 @@ class Generator:
             self.__validate_lists_size(x_points, y_points)
             self.__solver = Solver(x_points, y_points)
         except DifferentListSizeException:
-            self.__solver = Solver(x_points[:len(y_points)], y_points)
+            if len(y_points) < len(x_points):
+                self.__solver = Solver(x_points[:len(y_points)], y_points)
+            else:
+                self.__solver = Solver(x_points, y_points[:len(x_points)])
             logging.warning(
                 "Timeout: program interrupted while calculating points." +
                 "Computing on less check points")

@@ -7,7 +7,6 @@ def init(x):
 
 def my_function(n):
     for i in range(0, n):
-        for j in range(0, n):
             pass
 
 
