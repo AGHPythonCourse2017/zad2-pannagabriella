@@ -48,6 +48,8 @@ class Solver:
         logging.info("Solving function...")
         minimal_error = float('inf')
 
+        self.generate_time_and_size_functions()
+
         candidate_functions = [self.__function_box.n, self.__function_box.nlogn, self.__function_box.n2]
 
         for candidate_function in candidate_functions:
@@ -63,15 +65,19 @@ class Solver:
 
                 self.__winner_function = candidate_function
 
-                self.__time_function = self.__function_box.linear_function(coefficients[0], coefficients[1])
-
-                if coefficients[0] != 0:
-                    self.__size_function = self.__function_box.linear_function(
-                        1 / coefficients[0], -coefficients[1] / coefficients[0])
-                else:
-                    logging.warning("PFunction may be is constant!")
-
         logging.info("Function computed!")
+
+    def generate_time_and_size_functions(self):
+        coefficients = numpy.polyfit(self.__list_x, self.__list_y, 1)
+        self.__time_function = self.__function_box.linear_function(coefficients[0], coefficients[1])
+
+        if coefficients[0] != 0:
+            self.__size_function = self.__function_box.linear_function(
+                1 / coefficients[0], -coefficients[1] / coefficients[0])
+        else:
+            logging.warning("Function may be is constant!")
+        pass
+
     def get_expected_complexity_function_name(self):
         return self.__winner_function.__name__
 

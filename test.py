@@ -15,3 +15,5 @@ if __name__ == '__main__':
 
     generator.start(10)
     print(generator.get_function_info())
+    print(generator.get_time_function()(100000))
+    print(generator.get_size_function()(12))
