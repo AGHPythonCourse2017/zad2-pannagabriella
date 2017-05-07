@@ -10,4 +10,5 @@ def function(n):
 def clean(x):
     pass
 
-gaba.start(init, function, clean)
+if __name__ == '__main__':
+    gaba.start(init, function, clean)
