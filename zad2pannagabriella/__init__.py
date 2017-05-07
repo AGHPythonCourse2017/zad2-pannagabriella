@@ -16,16 +16,20 @@ class FunctionBox:
     def __init__(self):
         pass
 
-    def n2(self, x):
+    @staticmethod
+    def n2(x):
         return x ** 2
 
-    def n(self, x):
+    @staticmethod
+    def n(x):
         return x
 
-    def nlogn(self, x):
+    @staticmethod
+    def nlogn(x):
         return x * numpy.log2(x)
 
-    def linear_function(self, a, b):
+    @staticmethod
+    def linear_function(a, b):
         def linear(x):
             if a == 0:
                 return b
@@ -38,7 +42,6 @@ class Solver:
     def __init__(self, list_x, list_y):
         self.__list_x = list_x
         self.__list_y = list_y
-        self.__function_box = FunctionBox()
 
         self.__winner_function = None
         self.__time_function = None
@@ -50,7 +53,7 @@ class Solver:
 
         self.generate_time_and_size_functions()
 
-        candidate_functions = [self.__function_box.n, self.__function_box.nlogn, self.__function_box.n2]
+        candidate_functions = [FunctionBox.n, FunctionBox.nlogn, FunctionBox.n2]
 
         for candidate_function in candidate_functions:
             scaled_x_list = [candidate_function(x) for x in self.__list_x]
@@ -69,14 +72,13 @@ class Solver:
 
     def generate_time_and_size_functions(self):
         coefficients = numpy.polyfit(self.__list_x, self.__list_y, 1)
-        self.__time_function = self.__function_box.linear_function(coefficients[0], coefficients[1])
+        self.__time_function = FunctionBox.linear_function(coefficients[0], coefficients[1])
 
         if coefficients[0] != 0:
-            self.__size_function = self.__function_box.linear_function(
+            self.__size_function = FunctionBox.linear_function(
                 1 / coefficients[0], -coefficients[1] / coefficients[0])
         else:
             logging.warning("Function may be is constant!")
-        pass
 
     def get_expected_complexity_function_name(self):
         return self.__winner_function.__name__
@@ -115,14 +117,17 @@ class Generator:
         try:
             self.__validate_count_time_exit_status()
         except TimeoutListException:
-            logging.warning("Timeout: program to slow to fully calculate. Computing on less check points")
+            logging.warning("Timeout: program to slow to fully calculate." +
+                            " Computing on less check points")
 
         try:
             self.__validate_lists_size(x_points, y_points)
             self.__solver = Solver(x_points, y_points)
         except DifferentListSizeException:
             self.__solver = Solver(x_points[:len(y_points)], y_points)
-            logging.warning("Timeout: program interrupted while calculating points. Computing on less check points")
+            logging.warning(
+                "Timeout: program interrupted while calculating points." +
+                "Computing on less check points")
 
         self.__solver.solve()
 
@@ -150,14 +155,16 @@ class Generator:
         self.__times_counter_exit_status.value = 1
         logging.info("All of possible data size has been checked")
 
-    def __queue_to_list(self, queue):
+    @staticmethod
+    def __queue_to_list(queue):
         points = []
         while True:
             if queue.empty():
                 return points
             points.append(queue.get())
 
-    def __validate_lists_size(self, x_points, y_points):
+    @staticmethod
+    def __validate_lists_size(x_points, y_points):
         if len(x_points) != len(y_points):
             raise DifferentListSizeException
 
