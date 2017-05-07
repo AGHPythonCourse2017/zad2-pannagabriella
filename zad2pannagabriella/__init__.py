@@ -76,7 +76,6 @@ class Solver:
 
             if square_error < minimal_error:
                 minimal_error = square_error
-
                 self.__winner_function = candidate_function
 
         logging.info("Function computed!")
