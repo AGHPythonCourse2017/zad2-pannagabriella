@@ -62,7 +62,9 @@ class Solver:
 
         self.generate_time_and_size_functions()
 
-        candidate_functions = [FunctionBox.n, FunctionBox.nlogn, FunctionBox.n2]
+        candidate_functions = [
+            FunctionBox.n, FunctionBox.nlogn, FunctionBox.n2]
+
         for candidate_function in candidate_functions:
 
             @generate_linear
@@ -70,7 +72,8 @@ class Solver:
                 return candidate_function(x)
 
             scaled_x_list = [candidate_function(x) for x in self.__list_x]
-            y_values = [new_function(x) for x in scaled_x_list]  # y = a * x + b
+            # y = a * x + b
+            y_values = [new_function(x) for x in scaled_x_list]
 
             square_error = self.count_square_error(y_values)
 
@@ -82,7 +85,8 @@ class Solver:
 
     def generate_time_and_size_functions(self):
         coefficients = numpy.polyfit(self.__list_x, self.__list_y, 1)
-        self.__time_function = FunctionBox.linear_function(coefficients[0], coefficients[1])
+        self.__time_function = FunctionBox.linear_function(
+            coefficients[0], coefficients[1])
 
         if coefficients[0] != 0:
             self.__size_function = FunctionBox.linear_function(
@@ -114,14 +118,17 @@ class Generator:
         self.__main_function = main_function
         self.__clean_function = clean_function
 
-        self.__times_counter_exit_status = multiprocessing.Value('d', 0)
+        self.__times_counter_exit_status = multiprocessing.Value('d', 1)
         self.__queueX = multiprocessing.Queue()
         self.__queueY = multiprocessing.Queue()
 
         self.__solver = None
 
     def start(self, end_time=30):
-        p = multiprocessing.Process(target=self.count_times, name="count_times", args=(1, 2, 10, 4, 0.1))
+        p = multiprocessing.Process(
+            target=self.count_times, name="count_times",
+            args=(1, 2, 10, 4, 0.1))
+
         p.start()
         p.join(end_time)
 
@@ -173,7 +180,7 @@ class Generator:
 
                 self.__clean_function(data)
 
-        self.__times_counter_exit_status.value = 1
+        self.__times_counter_exit_status.value = 0
         logging.info("All of possible data size has been checked")
 
     @staticmethod
@@ -190,14 +197,16 @@ class Generator:
             raise DifferentListSizeException
 
     def __validate_count_time_exit_status(self):
-        if self.__times_counter_exit_status.value == 0:
+        if self.__times_counter_exit_status.value == 1:
             raise TimeoutListException
 
     def get_function_info(self):
-        if self.__times_counter_exit_status.value == 0:
-            return "Function probable not faster than " + self.__solver.get_expected_complexity_function_name()
+        if self.__times_counter_exit_status.value == 1:
+            info = "Function probable not faster than "
         else:
-            return "Function probable complexity: " + self.__solver.get_expected_complexity_function_name()
+            info = "Function probable complexity: "
+
+        return info + self.__solver.get_expected_complexity_function_name()
 
     def get_time_function(self):
         return self.__solver.get_time_expected_function()
